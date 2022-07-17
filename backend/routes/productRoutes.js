@@ -12,7 +12,7 @@ const { protect } = require('../middleware/jwtMiddleware');
 
 const router = express.Router();
 
-router.get('/', getProducts);
+router.get('/', protect, getProducts);
 
 router.get('/:id', getProductById);
 

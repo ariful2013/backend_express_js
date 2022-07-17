@@ -30,6 +30,7 @@ const getProductByIdService = async (reqId) => {
 const setProductService = async (data) => {
   try {
     const product = await Product.create(data);
+
     return {
       name: product.name,
       price: product.price,

@@ -12,7 +12,7 @@ const {
 // @access  Private
 const getProducts = asyncHandler(async (req, res, next) => {
   try {
-    const products = await getProductsService(req.user.id);
+    const products = await getProductsService(req.user._id);
     res.status(200).send({ message: 'Success', data: products });
   } catch (error) {
     next(error);
@@ -40,8 +40,9 @@ const setProduct = asyncHandler(async (req, res, next) => {
     const product = await setProductService({
       name: req.body.name,
       price: req.body.price,
-      user: req.user.id,
+      user: req.user._id,
     });
+
     res.status(201).json({ message: 'Created', data: product });
   } catch (error) {
     next(error);

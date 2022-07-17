@@ -19,7 +19,9 @@ const getAllUsersService = async () => {
 const registerUserService = async (data) => {
   try {
     const user = await User.create(data);
+    console.log(user);
     return {
+      _id: user._id,
       name: user.name,
       email: user.email,
       password: user.password,

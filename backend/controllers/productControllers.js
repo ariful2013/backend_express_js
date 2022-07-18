@@ -55,6 +55,7 @@ const setProduct = asyncHandler(async (req, res, next) => {
 const updateProduct = asyncHandler(async (req, res, next) => {
   try {
     const reqId = req.params.id;
+    const userId = req.user._id;
     const body = req.body;
 
     const updatedProductRequest = {
@@ -64,6 +65,7 @@ const updateProduct = asyncHandler(async (req, res, next) => {
 
     const updatedProductResponse = await updateProductService(
       reqId,
+      userId,
       updatedProductRequest
     );
     res.status(200).send({ message: 'Updated', data: updatedProductResponse });
@@ -78,9 +80,9 @@ const updateProduct = asyncHandler(async (req, res, next) => {
 const deleteProduct = asyncHandler(async (req, res, next) => {
   try {
     const reqId = req.params.id;
-    const body = req.body;
+    const userId = req.user._id;
 
-    const deletedProductResponse = await deleteProductService(reqId);
+    const deletedProductResponse = await deleteProductService(reqId, userId);
     res.status(200).send({ message: 'Deleted', data: deletedProductResponse });
   } catch (error) {
     next(error);

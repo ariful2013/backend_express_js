@@ -1,9 +1,11 @@
 const {
   mongoDbErrorHandler,
   notFoundErrorHandler,
+  userUnauthorizedErrorHandler,
 } = require('../middleware/errorMiddleware');
 
 const Product = require('../models/productModel');
+const User = require('../models/userModel');
 
 const getProductsService = async (userId) => {
   try {
@@ -32,6 +34,7 @@ const setProductService = async (data) => {
     const product = await Product.create(data);
 
     return {
+      _id: product._id,
       name: product.name,
       price: product.price,
       user: product.user,
@@ -41,9 +44,20 @@ const setProductService = async (data) => {
   }
 };
 
-const updateProductService = async (reqId, updatedData) => {
+const updateProductService = async (reqId, userId, updatedData) => {
   try {
-    const product = await Product.findByIdAndUpdate(
+    const product = await Product.findById(reqId);
+    if (!product) {
+      notFoundErrorHandler(reqId);
+    }
+
+    const user = await User.findById(userId);
+
+    if (product.user.toString() !== user._id.toString()) {
+      userUnauthorizedErrorHandler();
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
       { _id: reqId },
       updatedData,
       {
@@ -51,26 +65,31 @@ const updateProductService = async (reqId, updatedData) => {
       }
     );
 
-    if (!product) {
-      notFoundErrorHandler(reqId);
-    }
-    return product;
+    return updatedProduct;
   } catch (error) {
     mongoDbErrorHandler(error);
   }
 };
 
-const deleteProductService = async (reqId) => {
+const deleteProductService = async (reqId, userId) => {
   try {
-    const product = await Product.findOneAndRemove(
+    const product = await Product.findById(reqId);
+    if (!product) {
+      notFoundErrorHandler(reqId);
+    }
+
+    const user = await User.findById(userId);
+
+    if (product.user.toString() !== user._id.toString()) {
+      userUnauthorizedErrorHandler();
+    }
+
+    const deletedProduct = await Product.findOneAndRemove(
       { _id: reqId },
       { new: true }
     );
 
-    if (!product) {
-      notFoundErrorHandler(reqId);
-    }
-    return product;
+    return deletedProduct;
   } catch (error) {
     mongoDbErrorHandler(error);
   }

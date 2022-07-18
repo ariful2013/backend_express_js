@@ -43,9 +43,16 @@ const invalidUserErrorHandler = () => {
   throw error;
 };
 
+const userUnauthorizedErrorHandler = () => {
+  const error = new Error(`Unauthorized Credentials !!!`);
+  error.status = 401;
+  throw error;
+};
+
 module.exports = {
   defaultErrorHandler,
   mongoDbErrorHandler,
   notFoundErrorHandler,
   invalidUserErrorHandler,
+  userUnauthorizedErrorHandler,
 };

@@ -18,9 +18,9 @@ router.get('/:id', getProductById);
 
 router.post('/', protect, setProduct);
 
-router.put('/:id', updateProduct);
+router.put('/:id', protect, updateProduct);
 
-router.delete('/:id', deleteProduct);
+router.delete('/:id', protect, deleteProduct);
 
 // // OR same route can declare together by chain method
 // router.route('/').get(getProducts).post(setProduct);
